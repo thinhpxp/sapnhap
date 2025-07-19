@@ -1,2 +1,3 @@
 the day you went away.
 ta sao yamada vẫn bị dính?
+Đã remove team member yama trong vercel.app
