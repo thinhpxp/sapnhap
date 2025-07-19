@@ -336,5 +336,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // --- KHỞI CHẠY ỨNG DỤNG
+    // --- KHỞI CHẠY ỨNG DỤNG---
+    initialize();
 });
