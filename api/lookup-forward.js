@@ -18,7 +18,7 @@ export default async function handler(request, response) {
     // === THAY ĐỔI LỚN: Không dùng .maybeSingle() nữa ===
     // Lấy về một mảng kết quả và chỉ giới hạn ở kết quả đầu tiên tìm thấy.
     const { data, error } = await supabase
-      .from('merger_data')
+      .from('full_vietnam')
       .select(`
         old_ward_code,
         old_district_code,

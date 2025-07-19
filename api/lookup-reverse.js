@@ -16,7 +16,7 @@ export default async function handler(request, response) {
 
   try {
     const { data, error } = await supabase
-      .from('merger_data')
+      .from('full_vietnam')
       .select(`
         old_ward_name,
         old_ward_code,

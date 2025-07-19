@@ -7,7 +7,7 @@ const supabase = createClient(
 );
 
 export default async function handler(request, response) {
-  // Lấy province_code từ tham số URL, ví dụ: /api/get-new-wards?province_code=96
+  // Lấy province_code từ tham số URL
   const { province_code } = request.query;
 
   if (!province_code) {
@@ -15,16 +15,18 @@ export default async function handler(request, response) {
   }
 
   try {
-    const { data, error } = await supabase
-      .from('new_wards')
-      .select('ward_code, name')
-      .eq('province_code', province_code) // Lọc theo mã tỉnh
-      .order('name', { ascending: true });
+    // === THAY ĐỔI CỐT LÕI: Gọi hàm SQL thay vì truy vấn trực tiếp ===
+    // 'get_new_wards_by_province' là tên hàm đã tạo trên Supabase
+    // { p_code: ... } là cách truyền tham số vào hàm đó
+    const { data, error } = await supabase.rpc('get_new_wards_by_province', {
+      p_code: parseInt(province_code, 10)
+    });
 
     if (error) {
       throw error;
     }
 
+    // Cấu trúc dữ liệu trả về vẫn y hệt, client không cần thay đổi gì
     response.status(200).json(data);
 
   } catch (error) {
