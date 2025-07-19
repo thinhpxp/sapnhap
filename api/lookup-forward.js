@@ -15,7 +15,9 @@ export default async function handler(request, response) {
   const oldWardCode = parseInt(code, 10);
 
   try {
-    const { data: record, error } = await supabase
+    // === THAY ĐỔI LỚN: Không dùng .maybeSingle() nữa ===
+    // Lấy về một mảng kết quả và chỉ giới hạn ở kết quả đầu tiên tìm thấy.
+    const { data, error } = await supabase
       .from('merger_data')
       .select(`
         old_ward_code,
@@ -27,15 +29,19 @@ export default async function handler(request, response) {
         new_province_code
       `)
       .eq('old_ward_code', oldWardCode)
-      .maybeSingle();
+      .limit(1); // Giới hạn chỉ lấy 1 bản ghi để đảm bảo hiệu năng
 
     if (error) throw error;
 
+    // Kiểm tra xem mảng data có phần tử nào không
+    const record = data && data.length > 0 ? data[0] : null;
+
     if (!record) {
+      // Không tìm thấy, tức là địa chỉ không đổi
       return response.status(200).json({ changed: false });
     }
 
-    // Trả về đầy đủ dữ liệu, bao gồm cả các mã code cũ
+    // Trả về dữ liệu của bản ghi đầu tiên tìm thấy
     response.status(200).json({
       changed: true,
       old_ward_code: record.old_ward_code,
