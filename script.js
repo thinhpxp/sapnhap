@@ -185,21 +185,29 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // =================================================================
-    // === LOGIC TRA CỨU CHÍNH - ĐÃ KẾT NỐI VỚI API BACK-END ===
+   // =================================================================
+    // === LOGIC TRA CỨU CHÍNH - ĐÃ CẬP NHẬT HIỂN THỊ CODE ===
     // =================================================================
     async function handleForwardLookup() {
-        const selectedCommune = communeChoices.getValue();
-        if (!selectedCommune || !selectedCommune.value) {
-            alert(t('alertSelectOldCommune'));
+        const selectedProvince = provinceChoices.getValue(true);
+        const selectedDistrict = districtChoices.getValue(true);
+        const selectedCommune = communeChoices.getValue(true);
+
+        if (!selectedProvince || !selectedDistrict || !selectedCommune) {
+            alert(t('alertSelectOldCommune', 'Vui lòng chọn đầy đủ địa chỉ cũ.'));
             return;
         }
 
-        const oldWardCode = selectedCommune.value;
-        const fullOldAddress = `${selectedCommune.label}, ${districtChoices.getValue().label}, ${provinceChoices.getValue().label}`;
+        const oldWardCode = selectedCommune;
+        const fullOldAddress = `${communeChoices.getValue().label}, ${districtChoices.getValue().label}, ${provinceChoices.getValue().label}`;
+        const oldCodes = `${selectedCommune}, ${selectedDistrict}, ${selectedProvince}`;
 
-        oldAddressDisplay.innerHTML = `<div class="address-line"><p><span class="label">${t('oldAddressLabel')}</span> ${fullOldAddress}</p></div>`;
-        newAddressDisplay.innerHTML = `<p>${t('lookingUp')}</p>`;
+        // --- THAY ĐỔI 1: Hiển thị địa chỉ cũ và mã cũ ngay lập tức ---
+        let oldAddressHtml = `
+            <div class="address-line"><p><span class="label">${t('oldAddressLabel', 'Địa chỉ cũ:')}</span> ${fullOldAddress}</p></div>
+            <div class="address-codes"><span class="label">Old Code:</span> ${oldCodes}</div>`;
+        oldAddressDisplay.innerHTML = oldAddressHtml;
+        newAddressDisplay.innerHTML = `<p>${t('lookingUp', 'Đang tra cứu...')}</p>`;
         resultContainer.classList.remove('hidden');
 
         try {
@@ -208,10 +216,18 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!response.ok) throw new Error(data.error || 'Server error');
 
             if (data.changed === false) {
-                newAddressDisplay.innerHTML = `<p class="no-change">${t('noChangeMessage')}</p>`;
+                newAddressDisplay.innerHTML = `<p class="no-change">${t('noChangeMessage', 'Địa chỉ này không thay đổi.')}</p>`;
             } else {
+                // --- THAY ĐỔI 2: Hiển thị địa chỉ mới và mã mới ---
                 const newAddressForDisplay = `${data.new_ward_name}, ${data.new_province_name}`;
-                let resultsHtml = `<div class="address-line"><p><span class="label">${t('newAddressLabel')}</span> ${newAddressForDisplay}</p><button class="copy-btn" title="Copy" data-copy-text="${newAddressForDisplay}">${copyIconSvg}</button></div>`;
+                const newCodes = `${data.new_ward_code}, ${data.new_province_code}`;
+
+                let resultsHtml = `
+                    <div class="address-line">
+                        <p><span class="label">${t('newAddressLabel', 'Đã sáp nhập thành:')}</span> ${newAddressForDisplay}</p>
+                        <button class="copy-btn" title="Copy" data-copy-text="${newAddressForDisplay}">${copyIconSvg}</button>
+                    </div>
+                    <div class="address-codes"><span class="label">New Code:</span> ${newCodes}</div>`;
                 newAddressDisplay.innerHTML = resultsHtml;
             }
         } catch (error) {
@@ -221,17 +237,20 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     async function handleReverseLookup() {
-        const selectedNewCommune = newCommuneChoices.getValue();
-        if (!selectedNewCommune || !selectedNewCommune.value) {
-             alert(t('alertSelectNewCommune'));
+        const selectedNewProvince = newProvinceChoices.getValue(true);
+        const selectedNewCommune = newCommuneChoices.getValue(true);
+
+        if (!selectedNewProvince || !selectedNewCommune) {
+             alert(t('alertSelectNewCommune', 'Vui lòng chọn đầy đủ địa chỉ mới.'));
             return;
         }
 
-        const newWardCode = selectedNewCommune.value;
-        const fullNewAddress = `${selectedNewCommune.label}, ${newProvinceChoices.getValue().label}`;
+        const newWardCode = selectedNewCommune;
+        const fullNewAddress = `${newCommuneChoices.getValue().label}, ${newProvinceChoices.getValue().label}`;
 
-        oldAddressDisplay.innerHTML = `<div class="address-line"><p><span class="label">${t('newAddressLabel').replace(':', '')}</span> ${fullNewAddress}</p></div>`;
-        newAddressDisplay.innerHTML = `<p>${t('lookingUp')}</p>`;
+        // Chỉ hiển thị loading ban đầu
+        oldAddressDisplay.innerHTML = '';
+        newAddressDisplay.innerHTML = `<p>${t('lookingUp', 'Đang tra cứu...')}</p>`;
         resultContainer.classList.remove('hidden');
 
         try {
@@ -240,16 +259,33 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!response.ok) throw new Error(data.error || 'Server error');
 
             if (data.length > 0) {
-                 const oldUnitsFullAddresses = data.map(record => {
-                    return `<li>${record.old_ward_name}, ${record.old_district_name}, ${record.old_province_name}</li>`;
+                // --- THAY ĐỔI 1: Hiển thị địa chỉ mới và mã mới ---
+                // Lấy mã từ bản ghi đầu tiên (vì chúng giống nhau cho tất cả)
+                const newCodes = `${data[0].new_ward_code}, ${data[0].new_province_code}`;
+                let newAddressHtml = `
+                    <div class="address-line"><p><span class="label">${t('newAddressLabel', 'Địa chỉ mới:').replace(':', '')}</span> ${fullNewAddress}</p></div>
+                    <div class="address-codes"><span class="label">New Code:</span> ${newCodes}</div>`;
+                oldAddressDisplay.innerHTML = newAddressHtml; // Gán vào phần hiển thị "cũ" (thực ra là phần trên)
+
+                // --- THAY ĐỔI 2: Hiển thị danh sách địa chỉ cũ kèm mã code ---
+                const oldUnitsFullAddresses = data.map(record => {
+                    const oldCodes = `${record.old_ward_code}, ${record.old_district_code}, ${record.old_province_code}`;
+                    return `
+                        <li>
+                            ${record.old_ward_name}, ${record.old_district_name}, ${record.old_province_name}
+                            <div class="address-codes"><span class="label">Old Code:</span> ${oldCodes}</div>
+                        </li>`;
                 }).join('');
-                newAddressDisplay.innerHTML = `<p class="label">${t('mergedFromLabel')}</p><ul class="old-units-list">${oldUnitsFullAddresses}</ul>`;
+                newAddressDisplay.innerHTML = `<p class="label" style="text-align:left; margin-bottom:5px;">${t('mergedFromLabel', 'Các đơn vị cũ hợp thành:')}</p><ul class="old-units-list">${oldUnitsFullAddresses}</ul>`;
             } else {
-                newAddressDisplay.innerHTML = `<p class="no-change">${t('noDataFoundMessage')}</p>`;
+                // Nếu không có kết quả, vẫn hiển thị thông tin địa chỉ mới đã nhập
+                oldAddressDisplay.innerHTML = `<div class="address-line"><p><span class="label">${t('newAddressLabel', 'Địa chỉ mới:').replace(':', '')}</span> ${fullNewAddress}</p></div>`;
+                newAddressDisplay.innerHTML = `<p class="no-change">${t('noDataFoundMessage', 'Không có dữ liệu về các đơn vị cũ.')}</p>`;
             }
         } catch (error) {
              console.error('Lỗi khi tra cứu ngược:', error);
-            newAddressDisplay.innerHTML = `<p class="error">${error.message}</p>`;
+             oldAddressDisplay.innerHTML = ''; // Xóa nếu có lỗi
+             newAddressDisplay.innerHTML = `<p class="error">${error.message}</p>`;
         }
     }
 

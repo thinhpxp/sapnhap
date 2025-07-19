@@ -1,5 +1,4 @@
-
-// api/lookup-reverse.js
+// /api/lookup-reverse.js
 import { createClient } from '@supabase/supabase-js';
 
 const supabase = createClient(
@@ -9,7 +8,6 @@ const supabase = createClient(
 
 export default async function handler(request, response) {
   const { code } = request.query;
-
   if (!code) {
     return response.status(400).json({ error: 'Thiếu tham số mã xã mới (code).' });
   }
@@ -17,17 +15,26 @@ export default async function handler(request, response) {
   const newWardCode = parseInt(code, 10);
 
   try {
-    // THAY ĐỔI: Lấy thêm old_ward_code
-    const { data: oldUnitRecords, error } = await supabase
-      .from('mapping')
-      .select('old_ward_code, old_ward_name, old_district_name, old_province_name')
+    const { data, error } = await supabase
+      .from('merger_data')
+      .select(`
+        old_ward_name,
+        old_ward_code,
+        old_district_name,
+        old_district_code,
+        old_province_name,
+        old_province_code,
+        new_ward_code,
+        new_province_code
+      `)
       .eq('new_ward_code', newWardCode);
 
     if (error) throw error;
+    
+    response.status(200).json(data);
 
-    response.status(200).json(oldUnitRecords);
-
-  } catch (error) {
+  } catch (error)
+ {
     console.error('Lỗi API Tra Cứu Ngược:', error);
     response.status(500).json({ error: 'Lỗi máy chủ nội bộ.' });
   }

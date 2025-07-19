@@ -604,3 +604,32 @@ button#lookup-btn:disabled {
 .language-switcher{
     text-align: center;
 }
+
+/* ... (toàn bộ nội dung css cũ giữ nguyên) ... */
+
+/* === THÊM MỚI: Style cho dòng hiển thị mã code === */
+.address-codes {
+    font-family: 'Courier New', Courier, monospace; /* Font chữ đơn cách để các số thẳng hàng */
+    font-size: 0.85em;
+    color: var(--text-muted);
+    background-color: #f0f2f5; /* Một màu nền nhẹ để phân biệt */
+    padding: 5px 10px;
+    border-radius: 4px;
+    margin-top: 2px;
+    margin-bottom: 8px; /* Thêm khoảng cách với dòng tiếp theo */
+    text-align: left;
+    word-spacing: -2px; /* Giảm nhẹ khoảng cách giữa các từ */
+}
+
+.address-codes .label {
+    font-weight: 600;
+    color: var(--text-color);
+    font-style: normal; /* Ghi đè các style italic nếu có */
+}
+
+/* Ghi đè một vài style cho danh sách kết quả tra cứu ngược */
+#result-content .old-units-list li .address-codes {
+    margin-top: 4px;
+    margin-bottom: 0;
+    font-size: 0.9em; /* Hơi lớn hơn một chút để dễ đọc trong danh sách */
+}
