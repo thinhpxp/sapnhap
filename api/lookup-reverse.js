@@ -1,4 +1,4 @@
-// /api/lookup-reverse.js
+// /api/lookup-reverse.js - Phiên bản cuối cùng, dựa trên schema chính xác
 import { createClient } from '@supabase/supabase-js';
 
 const supabase = createClient(
@@ -15,8 +15,9 @@ export default async function handler(request, response) {
   const newWardCode = parseInt(code, 10);
 
   try {
+    // === THAY ĐỔI CỐT LÕI: Sử dụng tên bảng và các cột chính xác ===
     const { data, error } = await supabase
-      .from('full_vietnam')
+      .from('full_vietnam') // Tên bảng chính xác
       .select(`
         old_ward_name,
         old_ward_code,
@@ -26,16 +27,19 @@ export default async function handler(request, response) {
         old_province_code,
         new_ward_code,
         new_province_code
-      `)
+      `) // Lấy chính xác các cột cần thiết
       .eq('new_ward_code', newWardCode);
 
-    if (error) throw error;
-    
+    if (error) {
+      console.error('Lỗi truy vấn Supabase trong lookup-reverse:', error);
+      throw error;
+    }
+
+    // Trả về dữ liệu cho client
     response.status(200).json(data);
 
-  } catch (error)
- {
-    console.error('Lỗi API Tra Cứu Ngược:', error);
+  } catch (error) {
+    console.error('Lỗi cuối cùng trong API Tra Cứu Ngược:', error);
     response.status(500).json({ error: 'Lỗi máy chủ nội bộ.' });
   }
 }

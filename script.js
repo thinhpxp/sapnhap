@@ -37,7 +37,16 @@ document.addEventListener('DOMContentLoaded', () => {
     let newProvinceChoices, newCommuneChoices;
 
     // === CÁC HÀM TIỆN ÍCH ===
-    function showNotification(message, type = 'loading') { notificationArea.textContent = message; notificationArea.className = type; notificationArea.classList.remove('hidden'); }
+    //function showNotification(message, type = 'loading') { notificationArea.textContent = message; notificationArea.className = type; notificationArea.classList.remove('hidden'); }
+    function showNotification(message, type = 'loading') {
+        if (notificationArea) {
+            notificationArea.textContent = message;
+            notificationArea.className = type;
+            notificationArea.classList.remove('hidden');
+        } else {
+            console.warn("Notification Area not found. Message:", message);
+        }
+    }
     function hideNotification() { notificationArea.classList.add('hidden'); notificationArea.textContent = ''; }
     function updateChoices(choicesInstance, placeholder, data, valueKey = 'code', labelKey = 'name') {
         choicesInstance.clearStore();
