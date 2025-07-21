@@ -1,17 +1,10 @@
 document.addEventListener('DOMContentLoaded', () => {
-
      // === PHÁT HIỆN NGÔN NGỮ HIỆN TẠI ===
     const currentLang = document.documentElement.lang || 'vi';
-    // === Lấy bản dịch hoặc một đối tượng rỗng nếu không có ===
     const translations = window.translations || {};
-
-    // === Hàm tiện ích để lấy bản dịch một cách an toàn ===
-    // Cung cấp một giá trị dự phòng nếu khóa không tồn tại
     const t = (key, fallback = '') => translations[key] || fallback;
-
     // === KHÓA API (CHỈ DÀNH CHO MYSTERY BOX) ===
     const UNSPLASH_ACCESS_KEY = 'Ln1_SF9l3ee_fsc320rUZjfB5fgSVCZlMg2JbSdh_XY';
-
     // === DOM Elements ===
     const lookupBtn = document.getElementById('lookup-btn');
     const resultContainer = document.getElementById('result-container');
@@ -29,6 +22,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const communeSelectEl = document.getElementById('commune-select');
     const newProvinceSelectEl = document.getElementById('new-province-select');
     const newCommuneSelectEl = document.getElementById('new-commune-select');
+     // THÊM MỚI: Các element cho checkbox
+    const localizationToggleContainer = document.getElementById('localization-toggle-container');
+    const removeDiacriticsToggle = document.getElementById('remove-diacritics-toggle');
 
     // === BIỂU TƯỢNG SVG ===
     const copyIconSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard" viewBox="0 0 16 16"><path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"/><path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z"/></svg>`;
@@ -36,18 +32,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
        // === QUẢN LÝ TRẠNG THÁI ===
     let isReverseMode = false;
-    let removeAccents = false; // Mặc định là không loại bỏ dấu
+    let removeAccents = currentLang === 'en'; // Mặc định bật cho tiếng Anh
     let provinceChoices, districtChoices, communeChoices;
     let newProvinceChoices, newCommuneChoices;
 
     // === CÁC HÀM TIỆN ÍCH ===
-
     function toNormalizedString(str) {
         if (!str) return '';
         str = str.replace(/đ/g, 'd').replace(/Đ/g, 'D');
         return str.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
     }
-
     function showNotification(message, type = 'loading') {
         if (notificationArea) {
             notificationArea.textContent = message;
@@ -75,41 +69,32 @@ document.addEventListener('DOMContentLoaded', () => {
     function applyTranslations() {
         document.querySelectorAll('[data-i18n-key]').forEach(el => {
             const key = el.getAttribute('data-i18n-key');
-            el.innerHTML = t(key, el.innerHTML); // Dùng text cũ làm fallback
+            el.innerHTML = t(key, el.innerHTML);
         });
-
         document.title = t('pageTitle', "Tra Cứu Sáp Nhập");
         const descEl = document.querySelector('meta[name="description"]');
-        const ogTitleEl = document.querySelector('meta[property="og:title"]');
-        const ogDescEl = document.querySelector('meta[property="og:description"]');
-
-        if (descEl) descEl.setAttribute('content', t('pageDescription'));
-        if (ogTitleEl) ogTitleEl.setAttribute('content', t('ogTitle'));
-        if (ogDescEl) ogDescEl.setAttribute('content', t('ogDescription'));
+        if(descEl) descEl.setAttribute('content', t('pageDescription'));
     }
-     // Hàm mới để xử lý tên địa danh theo ngôn ngữ VÀ checkbox
+    // Hàm mới để xử lý tên địa danh theo ngôn ngữ VÀ checkbox
     function localize(name, en_name) {
-        if (currentLang === 'en') {
-            // Nếu checkbox được chọn, dùng tên tiếng Anh không dấu từ CSDL
-            // Nếu không, dùng tên gốc có dấu
-            return removeAccents ? en_name : name;
+        if (currentLang === 'en' && removeAccents) {
+            // Ưu tiên dùng cột en_name đã được chuẩn hóa từ CSDL
+            // Nếu không có, tự loại bỏ dấu từ tên gốc (hữu ích cho old_data.js)
+            return en_name || toNormalizedString(name);
         }
-        // Luôn trả về tên gốc cho tiếng Việt
-        return name;
+        return name; // Luôn trả về tên gốc cho tiếng Việt hoặc khi checkbox bị tắt
     }
-
 
     // === CÁC HÀM KHỞI TẠO & GIAO DIỆN ===
     function initialize() {
         applyTranslations();
-
-        if (currentLang === 'en' && localizationToggleContainer) {
+        // Chỉ hiển thị và gán trạng thái cho checkbox nếu nó tồn tại (chỉ ở trang tiếng Anh)
+        if (localizationToggleContainer && removeDiacriticsToggle) {
             localizationToggleContainer.classList.remove('hidden');
             removeAccents = removeDiacriticsToggle.checked;
         }
         // ... (khởi tạo Choices.js giữ nguyên)
-        const choicesConfig = { searchEnabled: true, itemSelectText: t('selectChoice', 'Chọn'), removeItemButton: true, searchPlaceholderValue: "..." };
-
+        const choicesConfig = { searchEnabled: true, itemSelectText: t('selectChoice', 'Chọn'), removeItemButton: true };
         provinceChoices = new Choices(provinceSelectEl, { ...choicesConfig });
         districtChoices = new Choices(districtSelectEl, { ...choicesConfig });
         communeChoices = new Choices(communeSelectEl, { ...choicesConfig });
@@ -117,22 +102,22 @@ document.addEventListener('DOMContentLoaded', () => {
         newCommuneChoices = new Choices(newCommuneSelectEl, { ...choicesConfig });
 
         if (window.allProvincesData && window.allProvincesData.length > 0) {
-            // THAY ĐỔI: Sử dụng hàm toNormalizedString để tạo phiên bản không dấu cho dữ liệu cũ
+            // Bản địa hóa dữ liệu cho dropdown cũ
             const localizedOldData = window.allProvincesData.map(province => ({
                 ...province,
-                name: removeAccents ? toNormalizedString(province.name) : province.name,
+                name: localize(province.name, null), // old_data.js không có en_name, truyền null
                 districts: province.districts.map(district => ({
                     ...district,
-                    name: removeAccents ? toNormalizedString(district.name) : district.name,
+                    name: localize(district.name, null),
                     wards: district.wards.map(ward => ({
                         ...ward,
-                        name: removeAccents ? toNormalizedString(ward.name) : ward.name
+                        name: localize(ward.name, null)
                     }))
                 }))
             }));
             updateChoices(provinceChoices, t('oldProvincePlaceholder'), localizedOldData);
         } else {
-            showNotification(t('errorLoadOldData'), "error");
+            showNotification(t('errorLoadOldData', "Lỗi tải dữ liệu cũ."), "error");
         }
 
         resetChoice(districtChoices, t('oldDistrictPlaceholder'));
@@ -143,21 +128,22 @@ document.addEventListener('DOMContentLoaded', () => {
         loadNewProvincesDropdown();
     }
 
-    async function loadNewProvincesDropdown() {
-        resetChoice(newProvinceChoices, t('newProvinceLoading'));
+    async function loadNewProvincesDropdown() {resetChoice(newProvinceChoices, t('newProvinceLoading'));
         try {
             const response = await fetch('/api/get-new-provinces');
             if(!response.ok) throw new Error(t('errorFetchNewProvinces'));
             let data = await response.json();
-
             const localizedData = data.map(province => ({
                 ...province,
                 name: localize(province.name, province.en_name)
             }));
-
             updateChoices(newProvinceChoices, t('newProvincePlaceholder'), localizedData, 'province_code', 'name');
             newProvinceChoices.enable();
-        } catch (error) { /* ... */ }
+        } catch (error) {
+            console.error(error);
+            resetChoice(newProvinceChoices, t('newProvinceError'));
+            showNotification(error.message, 'error');
+        }
     }
 
     function toggleLookupUI() {
@@ -180,6 +166,14 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         if (mysteryBox) mysteryBox.addEventListener('click', fetchRandomImage);
         if(resultContainer) resultContainer.addEventListener('click', handleCopy);
+        // Lắng nghe sự kiện trên checkbox (nếu có)
+        if (removeDiacriticsToggle) {
+            removeDiacriticsToggle.addEventListener('change', () => {
+                removeAccents = removeDiacriticsToggle.checked;
+                // Gọi lại initialize để làm mới lại toàn bộ giao diện với cài đặt mới
+                initialize();
+            });
+        }
 
         // --- Sự kiện cho tra cứu XUÔI ---
         if(provinceSelectEl) provinceSelectEl.addEventListener('choice', (event) => {
@@ -221,17 +215,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 const response = await fetch(`/api/get-new-wards?province_code=${provinceCode}`);
                 if(!response.ok) throw new Error(t('newCommuneError'));
                 let data = await response.json();
-
                 const localizedData = data.map(ward => ({
                     ...ward,
                     name: localize(ward.name, ward.en_name)
                 }));
-
                 updateChoices(newCommuneChoices, t('newCommunePlaceholder'), localizedData, 'ward_code', 'name');
                 newCommuneChoices.enable();
-            } catch (error) { /* ... */ }
+            } catch (error) {
+                console.error(error);
+                resetChoice(newCommuneChoices, t('newCommuneError'));
+                showNotification(error.message, 'error');
+            }
         });
-
         if(newCommuneSelectEl) newCommuneSelectEl.addEventListener('choice', (event) => {
             lookupBtn.disabled = !event.detail.value;
         });
@@ -241,29 +236,21 @@ document.addEventListener('DOMContentLoaded', () => {
     // ===  LOGIC TRA CỨU CHÍNH - ĐÃ CẬP NHẬT HIỂN THỊ CODE         ===
     // ================================================================
     async function handleForwardLookup() {
-        const selectedProvince = provinceChoices.getValue(true);
-        const selectedDistrict = districtChoices.getValue(true);
-        const selectedCommune = communeChoices.getValue(true);
-
-        if (!selectedProvince || !selectedDistrict || !selectedCommune) {
-            alert(t('alertSelectOldCommune', 'Vui lòng chọn đầy đủ địa chỉ cũ.'));
+        const selectedCommune = communeChoices.getValue();
+        if (!selectedCommune || !selectedCommune.value) {
+            alert(t('alertSelectOldCommune'));
             return;
         }
 
-        const oldWardCode = selectedCommune;
-        const fullOldAddress = `${communeChoices.getValue().label}, ${districtChoices.getValue().label}, ${provinceChoices.getValue().label}`;
-        const oldCodes = `${selectedCommune}, ${selectedDistrict}, ${selectedProvince}`;
+        const oldWardCode = selectedCommune.value;
+        const fullOldAddress = `${selectedCommune.label}, ${districtChoices.getValue().label}, ${provinceChoices.getValue().label}`;
 
-        // --- THAY ĐỔI 1: Hiển thị địa chỉ cũ và mã cũ ngay lập tức ---
-        let oldAddressHtml = `
-            <div class="address-line"><p><span class="label">${t('oldAddressLabel', 'Địa chỉ cũ:')}</span> ${fullOldAddress}</p></div>
-            <div class="address-codes"><span class="label">Old Code:</span> ${oldCodes}</div>`;
-        oldAddressDisplay.innerHTML = oldAddressHtml;
-        newAddressDisplay.innerHTML = `<p>${t('lookingUp', 'Đang tra cứu...')}</p>`;
+        oldAddressDisplay.innerHTML = `<div class="address-line"><p><span class="label">${t('oldAddressLabel')}</span> ${fullOldAddress}</p></div>`;
+        newAddressDisplay.innerHTML = `<p>${t('lookingUp')}</p>`;
         resultContainer.classList.remove('hidden');
 
         try {
-           const response = await fetch(`/api/lookup-forward?code=${oldWardCode}`);
+            const response = await fetch(`/api/lookup-forward?code=${oldWardCode}`);
             const data = await response.json();
             if (!response.ok) throw new Error(data.error || 'Server error');
 
@@ -273,26 +260,27 @@ document.addEventListener('DOMContentLoaded', () => {
                 const newWardName = localize(data.new_ward_name, data.new_ward_en_name);
                 const newProvinceName = localize(data.new_province_name, data.new_province_en_name);
                 const newAddressForDisplay = `${newWardName}, ${newProvinceName}`;
-                // ... (hiển thị kết quả)
+                let resultsHtml = `<div class="address-line"><p><span class="label">${t('newAddressLabel')}</span> ${newAddressForDisplay}</p><button class="copy-btn" title="Copy" data-copy-text="${newAddressForDisplay}">${copyIconSvg}</button></div>`;
+                newAddressDisplay.innerHTML = resultsHtml;
             }
-        } catch (error) { /* ... */ }
+        } catch (error) {
+            console.error('Lỗi khi tra cứu xuôi:', error);
+            newAddressDisplay.innerHTML = `<p class="error">${error.message}</p>`;
+        }
     }
 
     async function handleReverseLookup() {
-        const selectedNewProvince = newProvinceChoices.getValue(true);
-        const selectedNewCommune = newCommuneChoices.getValue(true);
-
-        if (!selectedNewProvince || !selectedNewCommune) {
-             alert(t('alertSelectNewCommune', 'Vui lòng chọn đầy đủ địa chỉ mới.'));
+        const selectedNewCommune = newCommuneChoices.getValue();
+        if (!selectedNewCommune || !selectedNewCommune.value) {
+             alert(t('alertSelectNewCommune'));
             return;
         }
 
-        const newWardCode = selectedNewCommune;
-        const fullNewAddress = `${newCommuneChoices.getValue().label}, ${newProvinceChoices.getValue().label}`;
+        const newWardCode = selectedNewCommune.value;
+        const fullNewAddress = `${selectedNewCommune.label}, ${newProvinceChoices.getValue().label}`;
 
-        // Chỉ hiển thị loading ban đầu
-        oldAddressDisplay.innerHTML = '';
-        newAddressDisplay.innerHTML = `<p>${t('lookingUp', 'Đang tra cứu...')}</p>`;
+        oldAddressDisplay.innerHTML = `<div class="address-line"><p><span class="label">${t('newAddressLabel').replace(':', '')}</span> ${fullNewAddress}</p></div>`;
+        newAddressDisplay.innerHTML = `<p>${t('lookingUp')}</p>`;
         resultContainer.classList.remove('hidden');
 
         try {
@@ -307,11 +295,14 @@ document.addEventListener('DOMContentLoaded', () => {
                     const province = localize(record.old_province_name, record.old_province_en_name);
                     return `<li>${ward}, ${district}, ${province}</li>`;
                 }).join('');
-                // ... (hiển thị kết quả)
+                newAddressDisplay.innerHTML = `<p class="label">${t('mergedFromLabel')}</p><ul class="old-units-list">${oldUnitsFullAddresses}</ul>`;
             } else {
-                // ...
+                newAddressDisplay.innerHTML = `<p class="no-change">${t('noDataFoundMessage')}</p>`;
             }
-        } catch (error) {/* ... */}
+        } catch (error) {
+             console.error('Lỗi khi tra cứu ngược:', error);
+            newAddressDisplay.innerHTML = `<p class="error">${error.message}</p>`;
+        }
     }
 
     // === HÀM PHỤ TRỢ KHÁC ===
@@ -360,7 +351,6 @@ document.addEventListener('DOMContentLoaded', () => {
             mysteryBox.classList.remove('loading-state');
         }
     }
-
     // --- KHỞI CHẠY ỨNG DỤNG---
     initialize();
 });

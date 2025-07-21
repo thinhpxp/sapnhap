@@ -22,10 +22,10 @@ export default async function handler(request, response) {
         old_district_code,
         old_province_code,
         new_ward_name,
-        new_ward_en_name, /* <-- THÊM MỚI */
+        new_ward_en_name,
         new_ward_code,
         new_province_name,
-        new_province_en_name, /* <-- THÊM MỚI */
+        new_province_en_name,
         new_province_code
       `)
       .eq('old_ward_code', oldWardCode)

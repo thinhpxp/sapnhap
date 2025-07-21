@@ -19,13 +19,13 @@ export default async function handler(request, response) {
       .from('full_vietnam')
       .select(`
         old_ward_name,
-        old_ward_en_name, /* <-- THÊM MỚI */
+        old_ward_en_name,
         old_ward_code,
         old_district_name,
-        old_district_en_name, /* <-- THÊM MỚI */
+        old_district_en_name,
         old_district_code,
         old_province_name,
-        old_province_en_name, /* <-- THÊM MỚI */
+        old_province_en_name,
         old_province_code,
         new_ward_code,
         new_province_code
