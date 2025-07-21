@@ -1,4 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
+
+     // === PHÁT HIỆN NGÔN NGỮ HIỆN TẠI ===
+    const currentLang = document.documentElement.lang || 'vi';
     // === Lấy bản dịch hoặc một đối tượng rỗng nếu không có ===
     const translations = window.translations || {};
 
