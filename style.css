@@ -633,3 +633,32 @@ button#lookup-btn:disabled {
     margin-bottom: 0;
     font-size: 0.9em; /* Hơi lớn hơn một chút để dễ đọc trong danh sách */
 }
+
+/* === THÊM MỚI: Style cho checkbox loại bỏ dấu === */
+#localization-toggle-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 15px;
+    padding-top: 5px;
+}
+
+.form-group-inline {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.form-group-inline label {
+    margin-bottom: 0; /* Ghi đè margin mặc định của label */
+    font-size: 0.9em;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-weight: normal; /* Làm cho nhãn bớt đậm hơn */
+}
+
+.form-group-inline input[type="checkbox"] {
+    cursor: pointer;
+    /* Tăng kích thước checkbox một chút để dễ nhấn hơn */
+    width: 15px;
+    height: 15px;
+}

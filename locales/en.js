@@ -12,6 +12,7 @@ window.translations = {
   "lookupDescriptionNewToOld": "Select the new address to find the corresponding old administrative units.",
   "oldToNew": "Old → New",
   "newToOld": "New → Old",
+  "removeDiacriticsLabel": "Remove Vietnamese accents (e.g., Hà Nội -> ha noi)",
 
   // Forward Lookup Form
   "oldProvinceLabel": "Province / City (Old)",
