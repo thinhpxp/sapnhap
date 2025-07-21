@@ -633,3 +633,37 @@ button#lookup-btn:disabled {
     margin-bottom: 0;
     font-size: 0.9em; /* Hơi lớn hơn một chút để dễ đọc trong danh sách */
 }
+
+/* === STYLE CHO CÁC TOGGLE SWITCH === */
+/* Nhóm các selector lại để tái sử dụng style chung */
+.lookup-mode-container,
+.accent-toggle-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+    gap: 12px;
+}
+
+/* Style riêng cho switch accent để giảm khoảng cách */
+.accent-toggle-container {
+    margin-top: -10px;
+    margin-bottom: 25px;
+}
+
+/* Nhóm các selector lại để tái sử dụng style chung */
+.mode-label,
+.accent-mode-label {
+    font-size: 0.9em;
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+/* Phần còn lại của .switch, .slider... không cần thay đổi vì chúng đã chung chung */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 28px;
+}
+/* ... (giữ nguyên phần còn lại) ... */

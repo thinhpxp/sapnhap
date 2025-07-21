@@ -13,6 +13,9 @@ window.translations = {
   "oldToNew": "Old → New",
   "newToOld": "New → Old",
   "removeDiacriticsLabel": "Remove Vietnamese accents (e.g., Hà Nội -> ha noi)",
+  // THÊM CÁC DÒNG MỚI NÀY VÀO
+  "withAccents": "With Accents",
+  "withoutAccents": "Without Accents",
 
   // Forward Lookup Form
   "oldProvinceLabel": "Province / City (Old)",

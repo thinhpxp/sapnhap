@@ -83,7 +83,16 @@
                     </label>
                     <span class="mode-label" data-i18n-key="newToOld">New → Old</span>
                 </div>
-
+                <!-- === THÊM MỚI: Switch loại bỏ dấu với class riêng biệt === -->
+                <div id="accent-toggle-container" class="accent-toggle-container hidden">
+                    <span class="accent-mode-label" data-i18n-key="withAccents">With Accents</span>
+                    <label class="switch"> <!-- Giữ nguyên class switch vì nó là cấu trúc chung -->
+                        <input type="checkbox" id="accent-toggle">
+                        <span class="slider round"></span>
+                    </label>
+                    <span class="accent-mode-label" data-i18n-key="withoutAccents">Without Accents</span>
+                </div>
+                <!-- ======================================= -->
                 <div id="controls">
                     <!-- === KHUNG TRA CỨU XUÔI === -->
                     <div id="forward-controls">
