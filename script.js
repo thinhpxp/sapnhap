@@ -78,17 +78,15 @@ document.addEventListener('DOMContentLoaded', () => {
     // Hàm mới để xử lý tên địa danh theo ngôn ngữ VÀ checkbox
     function localize(name, en_name) {
         if (currentLang === 'en' && removeAccents) {
-            // Ưu tiên dùng cột en_name đã được chuẩn hóa từ CSDL
-            // Nếu không có, tự loại bỏ dấu từ tên gốc (hữu ích cho old_data.js)
-            return en_name || toNormalizedString(name);
+            return en_name || toNormalizedString(name); // Dùng en_name nếu có, không thì tự bỏ dấu
         }
-        return name; // Luôn trả về tên gốc cho tiếng Việt hoặc khi checkbox bị tắt
+        return name;
     }
 
     // === CÁC HÀM KHỞI TẠO & GIAO DIỆN ===
     function initialize() {
         applyTranslations();
-        // Chỉ hiển thị và gán trạng thái cho checkbox nếu nó tồn tại (chỉ ở trang tiếng Anh)
+         // SỬA LỖI: Chỉ thực hiện logic của checkbox nếu nó tồn tại
         if (localizationToggleContainer && removeDiacriticsToggle) {
             localizationToggleContainer.classList.remove('hidden');
             removeAccents = removeDiacriticsToggle.checked;
@@ -102,16 +100,15 @@ document.addEventListener('DOMContentLoaded', () => {
         newCommuneChoices = new Choices(newCommuneSelectEl, { ...choicesConfig });
 
         if (window.allProvincesData && window.allProvincesData.length > 0) {
-            // Bản địa hóa dữ liệu cho dropdown cũ
             const localizedOldData = window.allProvincesData.map(province => ({
                 ...province,
-                name: localize(province.name, null), // old_data.js không có en_name, truyền null
+                name: localize(province.name, province.name), // old_data không có en_name, tự bỏ dấu
                 districts: province.districts.map(district => ({
                     ...district,
-                    name: localize(district.name, null),
+                    name: localize(district.name, district.name),
                     wards: district.wards.map(ward => ({
                         ...ward,
-                        name: localize(ward.name, null)
+                        name: localize(ward.name, ward.name)
                     }))
                 }))
             }));
@@ -138,7 +135,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 name: localize(province.name, province.en_name)
             }));
             updateChoices(newProvinceChoices, t('newProvincePlaceholder'), localizedData, 'province_code', 'name');
-            newProvinceChoices.enable();
+
         } catch (error) {
             console.error(error);
             resetChoice(newProvinceChoices, t('newProvinceError'));
@@ -165,12 +162,21 @@ document.addEventListener('DOMContentLoaded', () => {
             else handleForwardLookup();
         });
         if (mysteryBox) mysteryBox.addEventListener('click', fetchRandomImage);
-        if(resultContainer) resultContainer.addEventListener('click', handleCopy);
+        // if(resultContainer) resultContainer.addEventListener('click', handleCopy);
+
         // Lắng nghe sự kiện trên checkbox (nếu có)
         if (removeDiacriticsToggle) {
             removeDiacriticsToggle.addEventListener('change', () => {
                 removeAccents = removeDiacriticsToggle.checked;
                 // Gọi lại initialize để làm mới lại toàn bộ giao diện với cài đặt mới
+                initialize();
+            });
+        }
+        // SỬA LỖI: Thêm kiểm tra null cho checkbox
+        if (removeDiacriticsToggle) {
+            removeDiacriticsToggle.addEventListener('change', () => {
+                removeAccents = removeDiacriticsToggle.checked;
+                // Gọi lại initialize để làm mới toàn bộ giao diện với cài đặt mới
                 initialize();
             });
         }
