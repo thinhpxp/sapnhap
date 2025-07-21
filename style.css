@@ -611,8 +611,8 @@ button#lookup-btn:disabled {
 .address-codes {
     font-family: 'Courier New', Courier, monospace; /* Font chữ đơn cách để các số thẳng hàng */
     font-size: 0.85em;
-    color: var(--text-muted);
-    background-color: #f0f2f5; /* Một màu nền nhẹ để phân biệt */
+    color: #ec2204;
+    background-color: #ffea6b80; /* Một màu nền nhẹ để phân biệt */
     padding: 5px 10px;
     border-radius: 4px;
     margin-top: 2px;
