@@ -112,7 +112,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                         </div>
                     </div>
                     <button id="lookup-btn" disabled data-i18n-key="lookupButton">Tra Cứu</button>
-                    <span id="event-counter"></span>
+
                 </div>
 
                <!-- <div id="notification-area"></div> -->
@@ -130,14 +130,14 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <!-- Cột bên phải (giữ nguyên không cần data-i18n-key) -->
         <!-- Nội dung phần này  -->
         <div class="right-column">
-             <h2>Hướng dẫn & Thông tin</h2>
-             <p class="intro" style="font-size:0.8em; text-align: left; margin-bottom: 5px;">+ Dùng switch để chuyển giữa 2 chế độ tra cứu.<br>+ Một số địa phương bị tách làm nhiều phần, mỗi phần sáp nhập vào nhiều nơi khác nhau.</p>
-            <!-- PHẦN HÌNH ẢNH -->
+             <h2>Thông tin</h2>
+            <p style="font-size: 0.8em; text-align: left;">Cung cấp dịch vụ liên quan đến Thương Mại Điện Tử | Thực hiện các thủ tục về TMĐT | Thông báo/đăng ký website, ứng dụng với bộ công thương | Đăng ký tích vàng ZALO OA.</p>
+            <p style="font-size: 0.85em; text-align: left; color: #01053b;">Email: thinhpxp@gmail.com | Phone: 0935 691 563</p>
             <div class="image-container-grid">
                 <!-- Cột 1 -->
                 <div class="qr-column">
                     <p class="qr-caption" style="text-align: center">Đóng góp cho dự án</p>
-                    <p style="font-size: 0.8em; color: var(--text-muted); text-align: center; margin-top: 10px;">Bạn hoàn toàn có thể dành một ly cà phê để góp phần duy trì website này.</p>
+                    <p style="font-size: 0.8em; color: var(--text-muted); text-align: center; margin-top: 10px;">Ứng dụng này miễn phí, tuy nhiên tên miền và máy chủ thì không như thế. Bạn có thể dành một ly cà phê để góp phần duy trì website này.</p>
                     <p style="font-size: 0.8em; color: var(--text-muted); text-align: center; margin-top: 10px;">Cám ơn và chúc bạn điều tuyệt vời nhất !</p>
                 </div>
                 <!-- Cột 2 -->
@@ -145,15 +145,13 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                     <img src="/thinhqr.webp" alt="Mã QR">
                 </div>
             </div>
-<!-- =================================== -->
-            <p style="font-size: 0.8em; text-align: left;">Cung cấp dịch vụ liên quan đến Thương Mại Điện Tử | Thực hiện các thủ tục về TMĐT | Thông báo/đăng ký website, ứng dụng với bộ công thương | Đăng ký tích vàng ZALO OA.</p>
-            <p style="font-size: 0.85em; text-align: left; color: #01053b;">Email: thinhpxp@gmail.com | Phone: 0935 691 563</p>
-            <!-- === HỘP MÙ VUI VẺ === -->
-            <div class="mystery-box-container">
-                <div id="mystery-box">
-                    <img id="mystery-box-image" src="/mystery-box.webp" alt="Hộp quà bí ẩn">
-                    <div class="loading-spinner hidden"></div>
-                </div>
+
+            <!-- GOOGLE REAL TIME -->
+            <div id="realtime-users-container">
+                <h4><span id="event-counter"></span></h4>
+                <ul id="realtime-locations-list">
+                    <li>Đang tải dữ liệu...</li>
+                </ul>
             </div>
         </div>
     </div>
@@ -170,13 +168,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <script src="/data/old_data.js" defer></script>
     <script src="/locales/vi.js" defer></script> <!-- Nạp tệp ngôn ngữ Tiếng Việt -->
     <script src="/script.js" defer></script>
-    <!-- GOOGLE REAL TIME -->
-    <div id="realtime-users-container">
-        <h4>Hoạt động gần đây</h4>
-        <ul id="realtime-locations-list">
-            <li>Đang tải dữ liệu...</li>
-        </ul>
-    </div>
      <!-- === VERCEL WEB ANALYTICS === -->
     <script>
       window.va = window.va || function () { (window.va.q = window.va.q || []).push(arguments); };
