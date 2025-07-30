@@ -12,7 +12,7 @@ export default async function handler(request, response) {
   // Cho phép trình duyệt từ mọi nguồn gọi API này (CORS)
   response.setHeader('Access-Control-Allow-Origin', '*');
   // Cache kết quả trong 1 giờ ở phía trình duyệt và CDN của Vercel
-  response.setHeader('Cache-Control', 's-maxage=3600, stale-while-revalidate');
+  response.setHeader('Cache-Control', 's-maxage=1800, stale-while-revalidate');
 
   try {
     const [gaResponse] = await analyticsDataClient.runReport({

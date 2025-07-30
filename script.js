@@ -137,6 +137,10 @@ document.addEventListener('DOMContentLoaded', () => {
         loadNewProvincesDropdown();
         // gọi hàm hiển thị dữ liệu của GOOGLE ANALYTICS
         displayEventCount();
+        // GỌI HÀM HIỂN THỊ GOOGLE REAL TIME
+        displayRealtimeLocations(); // Hàm mới
+        // Tự động làm mới sau mỗi 60 giây
+        setInterval(displayRealtimeLocations, 60000);
     }
 
     async function loadNewProvincesDropdown() {
@@ -404,6 +408,32 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         } catch (error) {
             console.error("Không thể hiển thị số lượt tra cứu:", error);
+        }
+    }
+    // GOOGLE THỜI GIAN THỰC
+    async function displayRealtimeLocations() {
+        const listElement = document.getElementById('realtime-locations-list');
+        if (!listElement) return;
+
+        try {
+            const response = await fetch('/api/get-realtime-locations');
+            const data = await response.json();
+
+            if (data.activeCities && data.activeCities.length > 0) {
+                listElement.innerHTML = ''; // Xóa dòng "Đang tải..."
+                data.activeCities.forEach(city => {
+                    const li = document.createElement('li');
+                    // Dịch một vài thành phố quen thuộc nếu cần
+                    const translatedCity = t(`city_${city.toLowerCase().replace(' ', '_')}`, city);
+                    li.textContent = `Một người dùng từ ${translatedCity} vừa truy cập.`;
+                    listElement.appendChild(li);
+                });
+            } else {
+                listElement.innerHTML = '<li>Chưa có hoạt động nào gần đây.</li>';
+            }
+        } catch (error) {
+            console.error("Không thể hiển thị hoạt động thời gian thực:", error);
+            listElement.innerHTML = '<li>Không thể tải dữ liệu.</li>';
         }
     }
 
