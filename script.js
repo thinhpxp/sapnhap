@@ -395,7 +395,7 @@ document.addEventListener('DOMContentLoaded', () => {
             mysteryBox.innerHTML = `<p style="color: red; font-size: 0.9em;">Could not load image.</p>`;
         }
     }
-    // Hiển trị dữ liệu từ GOOGLE ANALYTICS
+    // Hiển thị lượt tra cứu từ GOOGLE ANALYTICS
     async function displayEventCount() {
         const counterElement = document.getElementById('event-counter');
         if (!counterElement) return;
@@ -410,30 +410,40 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error("Không thể hiển thị số lượt tra cứu:", error);
         }
     }
-    // GOOGLE THỜI GIAN THỰC
+    // hiển thị nguồn truy cập GOOGLE THỜI GIAN THỰC
     async function displayRealtimeLocations() {
         const listElement = document.getElementById('realtime-locations-list');
         if (!listElement) return;
+
+        // Giữ lại nội dung cũ trong khi tải để tránh bị giật màn hình
+        const oldContent = listElement.innerHTML;
+        listElement.innerHTML = `<li>${t('realtimeLoading', 'Đang tải...')}</li>`;
 
         try {
             const response = await fetch('/api/get-realtime-locations');
             const data = await response.json();
 
-            if (data.activeCities && data.activeCities.length > 0) {
+            if (data.activeLocations && data.activeLocations.length > 0) {
                 listElement.innerHTML = ''; // Xóa dòng "Đang tải..."
-                data.activeCities.forEach(city => {
+                data.activeLocations.forEach(location => {
                     const li = document.createElement('li');
+
                     // Dịch một vài thành phố quen thuộc nếu cần
-                    const translatedCity = t(`city_${city.toLowerCase().replace(' ', '_')}`, city);
-                    li.textContent = `Một người dùng từ ${translatedCity} vừa truy cập.`;
+                    const translatedCity = t(`city_${location.city.toLowerCase().replace(/ /g, '_')}`, location.city);
+
+                    // Xây dựng chuỗi văn bản
+                    const userText = t('realtimeUserFrom', '{count} người dùng từ').replace('{count}', location.count);
+
+                    li.innerHTML = `${userText} <strong>${translatedCity}</strong>`;
                     listElement.appendChild(li);
                 });
             } else {
-                listElement.innerHTML = '<li>Chưa có hoạt động nào gần đây.</li>';
+                listElement.innerHTML = `<li>${t('realtimeNoActivity', 'Chưa có hoạt động nào gần đây.')}</li>`;
             }
         } catch (error) {
             console.error("Không thể hiển thị hoạt động thời gian thực:", error);
-            listElement.innerHTML = '<li>Không thể tải dữ liệu.</li>';
+            // Nếu lỗi, hiển thị lại nội dung cũ thay vì thông báo lỗi
+            listElement.innerHTML = oldContent || `<li>${t('realtimeError', 'Không thể tải dữ liệu.')}</li>`;
         }
     }
 

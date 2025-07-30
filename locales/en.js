@@ -57,4 +57,10 @@ window.translations = {
   "footerAbout": "About",
   "footerContact": "Contact",
   "footerPolicies": "Policies"
+
+  //google
+  "realtimeActivity": "Recent Activity",
+"realtimeUserFrom": "{count} user(s) from", // {count} sẽ được thay thế
+"realtimeNoActivity": "No recent activity yet.",
+"realtimeError": "Could not load data.",
 };
