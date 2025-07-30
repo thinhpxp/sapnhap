@@ -135,6 +135,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         addEventListeners();
         loadNewProvincesDropdown();
+        // gọi hàm hiển thị dữ liệu của GOOGLE ANALYTICS
+        displayEventCount();
     }
 
     async function loadNewProvincesDropdown() {
@@ -387,6 +389,21 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch (error) {
             console.error("Error fetching image:", error);
             mysteryBox.innerHTML = `<p style="color: red; font-size: 0.9em;">Could not load image.</p>`;
+        }
+    }
+    // Hiển trị dữ liệu từ GOOGLE ANALYTICS
+    async function displayEventCount() {
+        const counterElement = document.getElementById('event-counter');
+        if (!counterElement) return;
+
+        try {
+            const response = await fetch('/api/get-event-count');
+            const data = await response.json();
+            if (data.totalClicks) {
+                counterElement.textContent = `Đã có ${data.totalClicks.toLocaleString('vi-VN')} lượt tra cứu!`;
+            }
+        } catch (error) {
+            console.error("Không thể hiển thị số lượt tra cứu:", error);
         }
     }
 
