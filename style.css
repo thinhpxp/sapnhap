@@ -476,6 +476,12 @@ button#lookup-btn:disabled {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
+@media (max-width: 768px) {
+    .qr-column{
+        padding: 0;
+    }
+}
+
 .qr-column img {
     width: 100%;            /* Ảnh co giãn theo chiều rộng của cột */
     height: 80%;
