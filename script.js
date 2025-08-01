@@ -423,6 +423,11 @@ document.addEventListener('DOMContentLoaded', () => {
             const response = await fetch('/api/get-realtime-locations');
             const data = await response.json();
 
+             // === THÊM MỚI: Hiển thị tổng số người dùng ===
+            if (data.totalActiveUsers !== undefined) {
+                totalUsersElement.textContent = `(${data.totalActiveUsers})`;
+            }
+
             if (data.activeLocations && data.activeLocations.length > 0) {
                 listElement.innerHTML = ''; // Xóa dòng "Đang tải..."
                 data.activeLocations.forEach(location => {

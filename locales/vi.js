@@ -56,7 +56,7 @@ window.translations = {
 
   //google
   "realtimeActivity": "Hoạt động gần đây",
-    "realtimeUserFrom": "{count} người dùng từ", // {count} sẽ được thay thế
-    "realtimeNoActivity": "Chưa có hoạt động nào gần đây.",
-    "realtimeError": "Không thể tải dữ liệu.",
+  "realtimeUserFrom": "{count} người dùng từ", // {count} sẽ được thay thế
+  "realtimeNoActivity": "Chưa có hoạt động nào gần đây.",
+  "realtimeError": "Không thể tải dữ liệu.",
 };

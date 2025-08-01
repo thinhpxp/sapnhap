@@ -478,7 +478,7 @@ button#lookup-btn:disabled {
 
 @media (max-width: 768px) {
     .qr-column{
-        padding: 0;
+        padding: 0px;
     }
 }
 

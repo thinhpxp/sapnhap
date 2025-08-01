@@ -35,9 +35,13 @@ export default async function handler(request, response) {
 
     // Sắp xếp danh sách theo số lượng người dùng giảm dần
     locations.sort((a, b) => b.count - a.count);
+    // === THÊM MỚI: Tính tổng số người dùng ===
+    // Sử dụng hàm reduce để tính tổng tất cả các giá trị 'count' trong mảng locations
+    const totalActiveUsers = locations.reduce((total, location) => total + location.count, 0);
 
-    // Trả về một mảng các đối tượng, mỗi đối tượng chứa tên thành phố và số lượng
+    // Trả về cả danh sách chi tiết VÀ tổng số người dùng
     response.status(200).json({
+      totalActiveUsers: totalActiveUsers, // <-- Thêm mới
       activeLocations: locations
     });
 
