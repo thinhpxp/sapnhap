@@ -56,7 +56,7 @@ window.translations = {
 
   //google
   "realtimeActivity": "Hoạt động gần đây",
-  "realtimeTotalUsers": "người dùng trực tuyến",
+  "realtimeTotalUsers": "người online",
   "realtimeTotalLookups": "lượt tra cứu",
   "realtimeUserFrom": "{count} người dùng từ",
   "realtimeNoActivity": "Chưa có hoạt động nào gần đây.",
