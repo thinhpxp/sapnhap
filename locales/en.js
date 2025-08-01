@@ -60,7 +60,10 @@ window.translations = {
 
   // google
   "realtimeActivity": "Recent Activity",
+  "realtimeTotalUsers": "users online",
+  "realtimeTotalLookups": "lookups",
   "realtimeUserFrom": "{count} user(s) from",
   "realtimeNoActivity": "No recent activity yet.",
   "realtimeError": "Could not load data.",
+  "realtimeLoading": "Loading data...",
 };

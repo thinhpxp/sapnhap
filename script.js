@@ -396,72 +396,72 @@ document.addEventListener('DOMContentLoaded', () => {
             mysteryBox.innerHTML = `<p style="color: red; font-size: 0.9em;">Could not load image.</p>`;
         }
     }
-    // Hiển thị lượt tra cứu từ GOOGLE ANALYTICS
+            // Hiển thị lượt tra cứu từ GOOGLE ANALYTICS
     async function displayEventCount() {
         const counterElement = document.getElementById('event-counter');
         if (!counterElement) return;
 
         try {
             const response = await fetch('/api/get-event-count');
+            if (!response.ok) throw new Error('Failed to fetch event count');
             const data = await response.json();
+
             if (data.totalClicks) {
-                counterElement.textContent = `Lượt tra cứu ${data.totalClicks.toLocaleString('vi-VN')}`;
+                // Sử dụng toLocaleString để định dạng số cho đẹp
+                const formattedCount = data.totalClicks.toLocaleString(currentLang === 'vi' ? 'vi-VN' : 'en-US');
+                // Kết hợp số và nhãn đã dịch
+                counterElement.textContent = `${formattedCount} ${t('realtimeTotalLookups', 'lượt tra cứu')}`;
             }
         } catch (error) {
             console.error("Không thể hiển thị số lượt tra cứu:", error);
+            counterElement.textContent = `N/A ${t('realtimeTotalLookups', 'lượt tra cứu')}`;
         }
     }
-    // Hàm mới để lấy và hiển thị dữ liệu thời gian thực
-async function displayRealtimeLocations() {
-    const listElement = document.getElementById('realtime-locations-list');
-    const totalUsersElement = document.getElementById('realtime-total-users');
-    if (!listElement || !totalUsersElement) return;
 
-    const oldContent = listElement.innerHTML;
-    // Không hiển thị "Đang tải..." nếu đã có nội dung để tránh giật màn hình khi tự làm mới
-    if (listElement.children.length === 0 || !listElement.textContent.includes(t('realtimeLoading', 'Đang tải...'))) {
-        listElement.innerHTML = `<li>${t('realtimeLoading', 'Đang tải...')}</li>`;
-    }
+    // Hàm mới để lấy và hiển thị dữ liệu người truy cập thời gian thực GOOGLE ANALYTICS
+    async function displayRealtimeLocations() {
+        const listElement = document.getElementById('realtime-locations-list');
+        const totalUsersElement = document.getElementById('realtime-total-users');
+        if (!listElement || !totalUsersElement) return;
 
-    try {
-        const response = await fetch('/api/get-realtime-locations');
-        const data = await response.json();
-
-        if (data.totalActiveUsers !== undefined) {
-            totalUsersElement.textContent = `${data.totalActiveUsers}`;
+        const oldContent = listElement.innerHTML;
+        // Chỉ hiển thị "Đang tải..." lần đầu tiên
+        if (listElement.children.length === 0 || !listElement.textContent.includes(t('realtimeLoading', 'Đang tải...'))) {
+            listElement.innerHTML = `<li>${t('realtimeLoading', 'Đang tải...')}</li>`;
         }
 
-        if (data.activeLocations && data.activeLocations.length > 0) {
-            listElement.innerHTML = '';
-            data.activeLocations.forEach(location => {
-                const li = document.createElement('li');
+        try {
+            const response = await fetch('/api/get-realtime-locations');
+            if (!response.ok) throw new Error('Failed to fetch realtime locations');
+            const data = await response.json();
 
-                // Dịch tên thành phố
-                const translatedCity = t(`city_${location.city.toLowerCase().replace(/ /g, '_')}`, location.city);
+            if (data.totalActiveUsers !== undefined) {
+                const formattedTotal = data.totalActiveUsers.toLocaleString(currentLang === 'vi' ? 'vi-VN' : 'en-US');
+                totalUsersElement.textContent = `${formattedTotal} ${t('realtimeTotalUsers', 'người dùng trực tuyến')}`;
+            }
 
-                // === THAY ĐỔI CỐT LÕI: Xây dựng chuỗi hiển thị địa điểm ===
-                let locationDisplay = translatedCity; // Mặc định chỉ hiển thị thành phố
-
-                // Nếu có quốc gia và quốc gia đó không phải Việt Nam
-                if (location.country && location.country !== 'Vietnam') {
-                    // Dịch tên quốc gia nếu có
-                    const translatedCountry = t(`country_${location.country.toLowerCase().replace(/ /g, '_')}`, location.country);
-                    locationDisplay = `${translatedCity} - ${translatedCountry}`;
-                }
-                // =======================================================
-                const userText = t('realtimeUserFrom', '{count} người dùng từ').replace('{count}', location.count);
-
-                li.innerHTML = `${userText} <strong>${locationDisplay}</strong>`;
-                listElement.appendChild(li);
-            });
-        } else {
-            listElement.innerHTML = `<li>${t('realtimeNoActivity', 'Chưa có hoạt động nào gần đây.')}</li>`;
+            if (data.activeLocations && data.activeLocations.length > 0) {
+                listElement.innerHTML = '';
+                data.activeLocations.forEach(location => {
+                    const li = document.createElement('li');
+                    const translatedCity = t(`city_${location.city.toLowerCase().replace(/ /g, '_')}`, location.city);
+                    let locationDisplay = translatedCity;
+                    if (location.country && location.country !== 'Vietnam') {
+                        const translatedCountry = t(`country_${location.country.toLowerCase().replace(/ /g, '_')}`, location.country);
+                        locationDisplay = `${translatedCity} - ${translatedCountry}`;
+                    }
+                    const userText = t('realtimeUserFrom', '{count} người dùng từ').replace('{count}', location.count);
+                    li.innerHTML = `${userText} <strong>${locationDisplay}</strong>`;
+                    listElement.appendChild(li);
+                });
+            } else {
+                listElement.innerHTML = `<li>${t('realtimeNoActivity', 'Chưa có hoạt động nào gần đây.')}</li>`;
+            }
+        } catch (error) {
+            console.error("Không thể hiển thị hoạt động thời gian thực:", error);
+            listElement.innerHTML = oldContent || `<li>${t('realtimeError', 'Không thể tải dữ liệu.')}</li>`;
         }
-    } catch (error) {
-        console.error("Không thể hiển thị hoạt động thời gian thực:", error);
-        listElement.innerHTML = oldContent || `<li>${t('realtimeError', 'Không thể tải dữ liệu.')}</li>`;
     }
-}
 
     // --- KHỞI CHẠY ỨNG DỤNG ---
     initialize();

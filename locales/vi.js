@@ -55,8 +55,12 @@ window.translations = {
   "footerPolicies": "Chính sách",
 
   //google
-  "realtimeActivity": "Lượt truy cập",
-  "realtimeUserFrom": "{count} người dùng từ", // {count} sẽ được thay thế
+  "realtimeActivity": "Hoạt động gần đây",
+  "realtimeTotalUsers": "người dùng trực tuyến",
+  "realtimeTotalLookups": "lượt tra cứu",
+  "realtimeUserFrom": "{count} người dùng từ",
   "realtimeNoActivity": "Chưa có hoạt động nào gần đây.",
   "realtimeError": "Không thể tải dữ liệu.",
+  "realtimeLoading": "Đang tải dữ liệu...",
 };
+
