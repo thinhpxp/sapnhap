@@ -427,7 +427,7 @@ async function displayRealtimeLocations() {
         const data = await response.json();
 
         if (data.totalActiveUsers !== undefined) {
-            totalUsersElement.textContent = `(${data.totalActiveUsers})`;
+            totalUsersElement.textContent = `${data.totalActiveUsers}`;
         }
 
         if (data.activeLocations && data.activeLocations.length > 0) {
