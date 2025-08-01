@@ -135,8 +135,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         addEventListeners();
         loadNewProvincesDropdown();
-        // gọi hàm hiển thị dữ liệu của GOOGLE ANALYTICS
+        // gọi hàm hiển thị lượt tra cứu GOOGLE ANALYTICS
         displayEventCount();
+        setInterval(displayEventCount, 30000);
         // GỌI HÀM HIỂN THỊ GOOGLE REAL TIME
         displayRealtimeLocations(); // Hàm mới
         // Tự động làm mới sau mỗi 60 giây
