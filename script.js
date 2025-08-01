@@ -141,7 +141,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // GỌI HÀM HIỂN THỊ GOOGLE REAL TIME
         displayRealtimeLocations(); // Hàm mới
         // Tự động làm mới sau mỗi 60 giây
-        setInterval(displayRealtimeLocations, 60000);
+        setInterval(displayRealtimeLocations, 75000);
     }
 
     async function loadNewProvincesDropdown() {
