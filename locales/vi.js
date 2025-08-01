@@ -58,6 +58,5 @@ window.translations = {
   "realtimeActivity": "Lượt truy cập",
   "realtimeUserFrom": "{count} người dùng từ", // {count} sẽ được thay thế
   "realtimeNoActivity": "Chưa có hoạt động nào gần đây.",
-  "realtime-total-users": "Lượt truy cập",
   "realtimeError": "Không thể tải dữ liệu.",
 };
