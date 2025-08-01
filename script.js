@@ -449,8 +449,7 @@ async function displayRealtimeLocations() {
                     locationDisplay = `${translatedCity} - ${translatedCountry}`;
                 }
                 // =======================================================
-
-                const userText = t('realtimeUserFrom', '{count}').replace('{count}', location.count);
+                const userText = t('realtimeUserFrom', '{count} người dùng từ').replace('{count}', location.count);
 
                 li.innerHTML = `${userText} <strong>${locationDisplay}</strong>`;
                 listElement.appendChild(li);
