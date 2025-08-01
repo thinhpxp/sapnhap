@@ -413,6 +413,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // hiển thị nguồn truy cập GOOGLE THỜI GIAN THỰC
     async function displayRealtimeLocations() {
         const listElement = document.getElementById('realtime-locations-list');
+        const totalUsersElement = document.getElementById('realtime-total-users'); // <-- Thêm mới
         if (!listElement) return;
 
         // Giữ lại nội dung cũ trong khi tải để tránh bị giật màn hình
