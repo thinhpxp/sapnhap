@@ -426,7 +426,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
              // === THÊM MỚI: Hiển thị tổng số người dùng ===
             if (data.totalActiveUsers !== undefined) {
-                totalUsersElement.textContent = `(${data.totalActiveUsers})`;
+                totalUsersElement.textContent = `${data.totalActiveUsers}`;
             }
 
             if (data.activeLocations && data.activeLocations.length > 0) {
