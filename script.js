@@ -338,7 +338,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             <div class="address-codes"><span class="label">Old Code:</span> ${oldCodes}</div>
                         </li>`;
                 }).join('');
-                newAddressDisplay.innerHTML = `<p class="label">${t('mergedFromLabel')}</p><ul class="old-units-list">${oldUnitsFullAddresses}</ul>`;
+                newAddressDisplay.innerHTML = `<p class="label">${t('mergedFromLabel','Các đơn vị cũ hợp thành:')}</p><ul class="old-units-list">${oldUnitsFullAddresses}</ul>`;
             } else {
                 oldAddressDisplay.innerHTML = `<div class="address-line"><p><span class="label">${t('newAddressLabel').replace(':', '')}</span> ${fullNewAddress}</p></div>`;
                 newAddressDisplay.innerHTML = `<p class="no-change">${t('noDataFoundMessage')}</p>`;
