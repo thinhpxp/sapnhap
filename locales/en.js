@@ -56,11 +56,11 @@ window.translations = {
   "footerHome": "Home",
   "footerAbout": "About",
   "footerContact": "Contact",
-  "footerPolicies": "Policies"
+  "footerPolicies": "Policies",
 
-  //google
+  // google
   "realtimeActivity": "Recent Activity",
-"realtimeUserFrom": "{count} user(s) from", // {count} sẽ được thay thế
-"realtimeNoActivity": "No recent activity yet.",
-"realtimeError": "Could not load data.",
+  "realtimeUserFrom": "{count} user(s) from",
+  "realtimeNoActivity": "No recent activity yet.",
+  "realtimeError": "Could not load data.",
 };

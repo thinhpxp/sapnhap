@@ -52,10 +52,10 @@ window.translations = {
   "footerHome": "Trang chủ",
   "footerAbout": "Giới thiệu",
   "footerContact": "Liên hệ",
-  "footerPolicies": "Chính sách"
+  "footerPolicies": "Chính sách",
 
   //google
-  //"realtimeActivity": "Lượt truy cập",
+  "realtimeActivity": "Lượt truy cập",
   "realtimeUserFrom": "{count} người dùng từ", // {count} sẽ được thay thế
   "realtimeNoActivity": "Chưa có hoạt động nào gần đây.",
   "realtimeError": "Không thể tải dữ liệu.",

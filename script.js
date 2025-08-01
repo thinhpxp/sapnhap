@@ -258,7 +258,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // --- KHÔI PHỤC: Hiển thị mã code cũ ---
         const oldCodes = `${selectedCommune}, ${selectedDistrict}, ${selectedProvince}`;
         let oldAddressHtml = `
-            <div class="address-line"><p><span class="label">${t('oldAddressLabel','Địa chỉ cũ:')}</span> ${fullOldAddress}</p></div>
+            <div class="address-line"><p><span class="label">${t('oldAddressLabel')}</span> ${fullOldAddress}</p></div>
             <div class="address-codes"><span class="label">Old Code:</span> ${oldCodes}</div>`;
 
         oldAddressDisplay.innerHTML = oldAddressHtml;
@@ -283,7 +283,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 let resultsHtml = `
                     <div class="address-line">
-                        <p><span class="label">${t('newAddressLabel','Đã sáp nhập thành:')}</span> ${newAddressForDisplay}</p>
+                        <p><span class="label">${t('newAddressLabel')}</span> ${newAddressForDisplay}</p>
                         <button class="copy-btn" title="Copy" data-copy-text="${newAddressForCopy}">${copyIconSvg}</button>
                     </div>
                     <div class="address-codes"><span class="label">New Code:</span> ${newCodes}</div>`;
