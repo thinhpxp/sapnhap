@@ -404,7 +404,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const response = await fetch('/api/get-event-count');
             const data = await response.json();
             if (data.totalClicks) {
-                counterElement.textContent = `Đã có ${data.totalClicks.toLocaleString('vi-VN')} lượt tra cứu!`;
+                counterElement.textContent = `Lượt tra cứu ${data.totalClicks.toLocaleString('vi-VN')}`;
             }
         } catch (error) {
             console.error("Không thể hiển thị số lượt tra cứu:", error);
