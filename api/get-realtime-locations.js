@@ -13,7 +13,10 @@ export default async function handler(request, response) {
   try {
     const [realtimeResponse] = await analyticsDataClient.runRealtimeReport({
       property: `properties/${propertyId}`,
-      dimensions: [{ name: 'city' }],
+      dimensions: [
+          { name: 'city' },
+          { name: 'country' }
+      ],
       metrics: [{ name: 'activeUsers' }],
     });
 
@@ -21,12 +24,14 @@ export default async function handler(request, response) {
     if (realtimeResponse.rows) {
       realtimeResponse.rows.forEach(row => {
         const city = row.dimensionValues[0].value;
+        const country = row.dimensionValues[1].value;
         const userCount = parseInt(row.metricValues[0].value, 10);
 
         // Chỉ lấy các thành phố có tên và có ít nhất 1 người dùng
         if (city && city !== '(not set)' && userCount > 0) {
           locations.push({
             city: city,
+            country: country,
             count: userCount
           });
         }
